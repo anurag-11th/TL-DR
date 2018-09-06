@@ -1,0 +1,363 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+
+<Button>:
+    font_size: 30
+	color: 1,0,0,0.3
+	size_hint: 0.26, 0.26
+	background_color: 0.18, .5, .92, 1
+	size_hint_y: None
+	height: 60
+
+<Label>
+	font_size: 30
+	color:1,0,0,1
+	size_hint: 0.2, 0.2
+
+<GridLayout>
+	padding: 10
+	spacing: 10
+
+<BoxLayout>
+	spacing: 5
+	padding: 5
+
+<PasteScreen>:
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		AnchorLayout:
+			size_hint_y: None
+			height: 140
+
+			Label:
+				text: 'TL;DR'
+				font_size: 50
+
+		BoxLayout:
+			orientation: 'horizontal'
+
+			AnchorLayout:
+				size_hint_x: 0.3
+
+				BoxLayout:
+					orientation: 'vertical'
+
+					Button:
+						text: 'Paste'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen1'
+
+					Button:
+						text: 'URL'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen2'
+
+					Button:
+						text: 'Upload'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen3'
+
+					Label:
+
+			BoxLayout:
+				orientation: 'vertical'
+
+				AnchorLayout:
+					size_hint_y: 0.7
+					TextInput:
+						id: paste_space
+						height: 350
+						hint_text: '''Use TL;DR to help save time by summarizing large bodies of text. \n\nYou can choose to paste an article or use any of the other features shown in the side bar.'''
+						multiline: True
+
+				AnchorLayout:
+					size_hint_y: 0.2
+
+					BoxLayout:
+						orientation: 'horizontal'
+
+						Button:
+							size_hint_y: None
+							height: 60
+							text: 'Reset'
+							on_press: root.clear_paste()
+
+						Button:
+							size_hint_y: None
+							height: 60
+							text: 'Summarize'
+							on_press: root.summarize()
+
+				Label:
+
+
+
+<UrlScreen>:
+	
+	BoxLayout:
+		orientation: 'vertical'
+
+		AnchorLayout:
+			size_hint_y: None
+			height: 140
+
+			Label:
+				text: 'TL;DR'
+				font_size: 50
+
+		BoxLayout:
+			orientation: 'horizontal'
+
+			AnchorLayout:
+				size_hint_x: 0.3
+
+				BoxLayout:
+					orientation: 'vertical'
+
+					Button:
+						text: 'Paste'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen1'
+
+					Button:
+						text: 'URL'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen2'
+
+					Button:
+						text: 'Upload'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen3'
+
+					Label:
+
+			GridLayout:
+				rows: 2
+				cols: 2
+
+				Label:
+					size_hint_y: None
+					height: 30
+					font_size: 20
+					text: 'URL: '
+
+				TextInput:
+					id: url_space
+					size_hint_y: None
+					multiline: False
+					height: 30
+					hint_text: "Paste an URL to find summary of an article"
+
+				Button:
+					size_hint_y: None
+					height: 60
+					text: 'Reset'
+					font_size: 30
+					on_press: root.clear_url()
+
+				Button:
+					size_hint_y: None
+					height: 60
+					size_hint_x: 0.05
+					font_size: 30
+					text: 'Summarize'
+					on_press: root.url_summarize()
+
+
+<UploadScreen>:
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		AnchorLayout:
+			size_hint_y: None
+			height: 140
+
+			Label:
+				text: 'TL;DR'
+				font_size: 50
+
+		BoxLayout:
+			orientation: 'horizontal'
+
+			AnchorLayout:
+				size_hint_x: 0.3
+
+				BoxLayout:
+					orientation: 'vertical'
+
+					Button:
+						text: 'Paste'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen1'
+
+					Button:
+						text: 'URL'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen2'
+
+					Button:
+						text: 'Upload'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen3'
+
+					Label:
+
+			GridLayout:
+				rows: 2
+				cols: 2
+
+				Button:
+					size_hint_y: None
+					height: 30
+					font_size: 20
+					text: 'Select'
+					on_press: root.upload()
+
+				TextInput:
+					id: upload_space
+					cursor_blink: False
+					cursor_color: 255, 255, 255, 1
+					readonly: True
+					size_hint_y: None
+					multiline: False
+					hint_text: "Select a file to upload"
+					height: 30
+
+				Button:
+					size_hint_y: None
+					height: 60
+					text: 'Reset'
+					font_size: 30
+					on_press: root.clear_upload()
+
+				Button:
+					size_hint_y: None
+					height: 60
+					font_size: 30
+					text: 'Summarize'
+					on_press: root.upload_summarize()
+
+
+<ResultScreen>:
+
+	result_box: result_box
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		AnchorLayout:
+			size_hint_y: None
+			height: 140
+
+			Label:
+				text: 'TL;DR'
+				font_size: 50
+
+		BoxLayout:
+			orientation: 'horizontal'
+
+			AnchorLayout:
+				size_hint_x: 0.3
+
+				BoxLayout:
+					orientation: 'vertical'
+
+					Button:
+						text: 'Paste'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen1'
+
+					Button:
+						text: 'URL'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen2'
+
+					Button:
+						text: 'Upload'
+						font_size: 30
+						size_hint_x: 0.8
+						size_hint_y: 0.05
+						on_press: root.manager.current = 'Screen3'
+
+					Label:
+
+			BoxLayout:
+				orientation: 'vertical'
+				spacing: 20
+
+				AnchorLayout:
+					size_hint_y: 0.05
+
+					Label: 
+						text: 'Result'
+
+				TextInput:
+					id: result_box
+					size_hint_y: 0.8
+					multiline: True
+					cursor_blink: False
+					cursor_color: 255, 255, 255, 1
+					readonly: True
+
+				AnchorLayout:
+					size_hint_y: 0.05
+
+					Label:
+						text: 'Stats go here'
+
+				Label:
+
+
+
+<Manager>:
+	id: screen_manager
+	transition: FadeTransition()
+	
+	screen_one: screen_one
+	screen_two: screen_two
+	screen_three: screen_three
+	screen_four: screen_four
+
+	PasteScreen:
+		id: screen_one
+		name: 'Screen1'
+		manager: screen_manager
+
+	UrlScreen:
+		id: screen_two
+		name: 'Screen2'
+		manager: screen_manager
+
+	UploadScreen:
+		id: screen_three
+		name: 'Screen3'
+		manager: screen_manager
+
+	ResultScreen:
+		id: screen_four
+		name: 'Screen4'
+		manager: screen_manager
