@@ -12,7 +12,7 @@ from kivy.properties import ObjectProperty
 from kivy.core.window import Window
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
-from summarize import summarize
+from summarize import summarize, getPercentage
 from webScrape import getArticle
 from readfile import getText
 
@@ -49,6 +49,7 @@ class PasteScreen(Screen):
 			self.manager.screens[3].result_box.text = ""
 			for s in summarized_sentences:
 				self.manager.screens[3].result_box.text += s +"\n\n"
+			self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(article_text, summarized_sentences)) + "%"
 
  
 class UrlScreen(Screen):
@@ -77,6 +78,7 @@ class UrlScreen(Screen):
 			self.manager.screens[3].result_box.text = ""
 			for s in summarized_sentences:
 				self.manager.screens[3].result_box.text += s +"\n\n"
+			self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(article, summarized_sentences)) + "%"
 
 
 class UploadScreen(Screen):
@@ -122,11 +124,14 @@ class UploadScreen(Screen):
 				self.manager.screens[3].result_box.text = ""
 				for s in summarized_sentences:
 					self.manager.screens[3].result_box.text += s +"\n\n"
+				self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(text, summarized_sentences)) + "%"
+
 
 
 class ResultScreen(Screen):
 	
 	result_box = ObjectProperty(None)
+	stat_label = ObjectProperty(None)
 
 class ScreenApp(App):
 
@@ -135,4 +140,5 @@ class ScreenApp(App):
 
 
 if __name__ == '__main__':
+
 	ScreenApp().run()
