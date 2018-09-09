@@ -15,6 +15,9 @@ from tkinter.filedialog import askopenfilename
 from summarize import summarize, getPercentage
 from webScrape import getArticle
 from readfile import getText
+import re
+
+url_regex = r'^(https:\/\/)?[\w\.\-\/]*$'
 
 class Manager(ScreenManager):
 
@@ -43,13 +46,30 @@ class PasteScreen(Screen):
 			popup.open()
 
 		else:
-			summarized_sentences = summarize(article_text)
+			try:
+				summarized_sentences = summarize(article_text)
 		
-			self.manager.current = "Screen4"
-			self.manager.screens[3].result_box.text = ""
-			for s in summarized_sentences:
-				self.manager.screens[3].result_box.text += s +"\n\n"
-			self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(article_text, summarized_sentences)) + "%"
+				self.manager.current = "Screen4"
+				self.manager.screens[3].result_box.text = ""
+				for s in summarized_sentences:
+					self.manager.screens[3].result_box.text += s +"\n\n"
+				self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(article_text, summarized_sentences)) + "%"
+			except TypeError:
+				summarized_sentences = summarize(article_text)
+		
+				self.manager.current = "Screen4"
+				self.manager.screens[3].result_box.text = ""
+				for s in summarized_sentences:
+					self.manager.screens[3].result_box.text += s +"\n\n"
+			"""else:
+				lyt = BoxLayout(orientation='vertical')
+				lbl = Label(text="Some error has occured.\n Please try again.", size_hint=(1, 0.3), font_size=25)
+				btn = Button(text="Close", size_hint = (1, 0.2))
+				lyt.add_widget(lbl)
+				lyt.add_widget(btn)
+				popup = Popup(title="Error!", content=lyt, size_hint=(None, None), size=(400, 400))
+				btn.bind(on_press=popup.dismiss)
+				popup.open()"""
 
  
 class UrlScreen(Screen):
@@ -59,26 +79,61 @@ class UrlScreen(Screen):
 
 	def url_summarize(self):      
 		url = self.ids.url_space.text
+
+		match = re.search(url_regex, url)
+
+		if match:
+			if url == "":
+				lyt = BoxLayout(orientation='vertical')
+				lbl = Label(text="URL cannot be empty!", size_hint=(1, 0.3), font_size=25)
+				btn = Button(text="Close", size_hint = (1, 0.2))
+				lyt.add_widget(lbl)
+				lyt.add_widget(btn)
+				popup = Popup(title="Error!", content=lyt, size_hint=(None, None), size=(400, 400))
+				btn.bind(on_press=popup.dismiss)
+				popup.open()
 		
-		if url == "":
+			else:
+				try:
+					article = getArticle(url)
+					summarized_sentences = summarize(article[1], article[0])
+				#		print(type(summarized_sentences))
+
+					self.manager.current = "Screen4"
+					self.manager.screens[3].result_box.text = ""
+					for s in summarized_sentences:
+						self.manager.screens[3].result_box.text += s +"\n\n"
+					space = "    "
+					self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(article, space.join(summarized_sentences))) + "%"
+
+				except TypeError:
+					article = getArticle(url)
+					summarized_sentences = summarize(article[1], article[0])
+
+					self.manager.current = "Screen4"
+					self.manager.screens[3].result_box.text = ""
+					for s in summarized_sentences:
+						self.manager.screens[3].result_box.text += s +"\n\n"
+				else:
+					lyt = BoxLayout(orientation='vertical')
+					lbl = Label(text="Some error has occured.\n Please try again.", size_hint=(1, 0.3), font_size=25)
+					btn = Button(text="Close", size_hint = (1, 0.2))
+					lyt.add_widget(lbl)
+					lyt.add_widget(btn)
+					popup = Popup(title="Error!", content=lyt, size_hint=(None, None), size=(400, 400))
+					btn.bind(on_press=popup.dismiss)
+					popup.open()
+					self.clear_url()
+		else:
 			lyt = BoxLayout(orientation='vertical')
-			lbl = Label(text="URL cannot be empty!", size_hint=(1, 0.3), font_size=25)
+			lbl = Label(text="Invalid URl. Enter a valid URL.", size_hint=(1, 0.3), font_size=25, text_size=(300, None))
 			btn = Button(text="Close", size_hint = (1, 0.2))
 			lyt.add_widget(lbl)
 			lyt.add_widget(btn)
 			popup = Popup(title="Error!", content=lyt, size_hint=(None, None), size=(400, 400))
 			btn.bind(on_press=popup.dismiss)
 			popup.open()
-		
-		else:
-			article = getArticle(url)
-			summarized_sentences = summarize(article[1], article[0])
 
-			self.manager.current = "Screen4"
-			self.manager.screens[3].result_box.text = ""
-			for s in summarized_sentences:
-				self.manager.screens[3].result_box.text += s +"\n\n"
-			self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(article, summarized_sentences)) + "%"
 
 
 class UploadScreen(Screen):
@@ -109,22 +164,39 @@ class UploadScreen(Screen):
 
 			if text == -1:
 				lyt = BoxLayout(orientation='vertical')
-				lbl = Label(text="File type uploaded is not supported. Please try another file.", size_hint=(1, 0.3), font_size=25)
+				lbl = Label(text="File type uploaded is not supported. Please try another file.", size_hint=(1, 0.3), font_size=25, text_size=(300, None))
 				btn = Button(text="Close", size_hint = (1, 0.2))
 				lyt.add_widget(lbl)
 				lyt.add_widget(btn)
 				popup = Popup(title="Error!", content=lyt, size_hint=(None, None), size=(400, 400))
 				btn.bind(on_press=popup.dismiss)
 				popup.open()
-				clear_upload()
+				self.clear_upload()
 
 			else:
-				summarized_sentences = summarize(text)		
-				self.manager.current = "Screen4"
-				self.manager.screens[3].result_box.text = ""
-				for s in summarized_sentences:
-					self.manager.screens[3].result_box.text += s +"\n\n"
-				self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(text, summarized_sentences)) + "%"
+				try:
+					summarized_sentences = summarize(text)		
+					self.manager.current = "Screen4"
+					self.manager.screens[3].result_box.text = ""
+					for s in summarized_sentences:
+						self.manager.screens[3].result_box.text += s +"\n\n"
+					self.manager.screens[3].stat_label.text = "Percentage Reduced: " + str(getPercentage(text, summarized_sentences)) + "%"
+				except TypeError:
+					summarized_sentences = summarize(text)
+			
+					self.manager.current = "Screen4"
+					self.manager.screens[3].result_box.text = ""
+					for s in summarized_sentences:
+						self.manager.screens[3].result_box.text += s +"\n\n"
+				"""else:
+					lyt = BoxLayout(orientation='vertical')
+					lbl = Label(text="Some error has occured.\n Please try again.", size_hint=(1, 0.3), font_size=25)
+					btn = Button(text="Close", size_hint = (1, 0.2))
+					lyt.add_widget(lbl)
+					lyt.add_widget(btn)
+					popup = Popup(title="Error!", content=lyt, size_hint=(None, None), size=(400, 400))
+					btn.bind(on_press=popup.dismiss)
+					popup.open()"""
 
 
 
@@ -140,5 +212,4 @@ class ScreenApp(App):
 
 
 if __name__ == '__main__':
-
 	ScreenApp().run()
